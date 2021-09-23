@@ -19,7 +19,7 @@
 	var geometry, material, mesh;
 	var clock;
 
-function cubo(x,y,z,material, color, wf){
+function cubo(x,y,z, px, py, pz, material, color, wf){
     geometry = new THREE.CubeGeometry(x, y, z);
     switch(material){
 	case 'Basic':  material = new THREE.MeshBasicMaterial({color: color, wireframe: wf}); break;
@@ -29,7 +29,13 @@ function cubo(x,y,z,material, color, wf){
 	case 'Lambert': material = new THREE.MeshLambertMaterial({color: color,wireframe: wf}); break;
         
 }
-    return new THREE.Mesh(geometry, material);
+    cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    cube.position.set(px, py, pz);
+
+
+    return cube;
 }
 
 function init() 
@@ -38,18 +44,24 @@ function init()
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     scene = new THREE.Scene();
-    mesh = cubo (1, 1, 1, 'Basic', 'blue', true);
-    mesh2 = cubo (2, 2, 2, 'Basic', 'red', true);
-    scene.add(mesh);
-    scene.add(mesh2);	
+    var arrCube = [];
+
+    var t = 1.2;
+    for (var i = 0; i < 3; i++) {
+	arrCube.push(cubo (t, t, t, t/2, t/2 + t * i, t/2, 'Basic', 'green', true))
+
+}
 
 	const axesHelper= new THREE.AxesHelper(10);
 	scene.add(axesHelper);
 	
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.set(6, 6 , 6);
-    mesh.position.set(0,1,0);
-    camera.lookAt(mesh.position);
+
+    //mesh.position.set(0.5, 0.5, 0.5);
+    //mesh2.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
+    camera.lookAt(arrCube[2].position);
+
     clock = new THREE.Clock();
     window.addEventListener('resize', onWindowResize, false);
 }
